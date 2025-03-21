@@ -42,6 +42,17 @@ hooks.Filters.CONFIG_OVERRIDES.add_items(
     ]
 )
 
+@hooks.Filters.IS_FILE_RENDERED.add()
+def _do_not_render_transformation_files(result: bool, path: str) -> bool:
+    """
+    Transformation files have templatized model names which contradict with tutors renderer
+    Therefore, we do not render them as templates but as it is
+    """
+    root, extension = os.path.splitext(path)
+    if "aspects_dbt_extension" in root and extension == ".sql":
+        return False
+    return result
+    
 
 ########################################
 # INITIALIZATION TASKS
