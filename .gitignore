@@ -1,0 +1,8 @@
+.*.swp
+!.gitignore
+TODO
+__pycache__
+*.egg-info/
+/build/
+/dist/
+tutordbt/templates/dbt/apps/logs

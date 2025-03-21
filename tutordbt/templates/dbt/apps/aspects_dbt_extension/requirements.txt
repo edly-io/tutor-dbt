@@ -1,0 +1,1 @@
+-r {{ DBT_REPOSITORY | replace("github.com", "raw.githubusercontent.com")  }}/{{ DBT_BRANCH }}/requirements.txt

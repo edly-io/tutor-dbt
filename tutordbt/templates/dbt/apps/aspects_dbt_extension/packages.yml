@@ -1,0 +1,3 @@
+packages:
+  - git: "{{ DBT_REPOSITORY }}"
+    revision: {{ DBT_BRANCH }}

@@ -1,0 +1,2 @@
+recursive-include tutordbt/patches *
+recursive-include tutordbt/templates *

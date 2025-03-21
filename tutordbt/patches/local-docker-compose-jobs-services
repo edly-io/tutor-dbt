@@ -1,0 +1,4 @@
+aspects-dbt-job:
+  extends: aspects-job
+  volumes:
+    - ../../env/plugins/aspects/build/aspects/aspects_dbt_extension:/app/aspects-dbt
