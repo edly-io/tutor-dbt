@@ -57,6 +57,8 @@ If the platform has already been initialized once and you would only like to rea
     # Deploy your customizations
     tutor dev do dbt -c "run"
 
+There is an example of how to add a custom model in the `example <https://github.com/edly-io/tutor-dbt/commit/0644278ce61243fc6bbc8976a4bb6ae8c84abe23>`_ branch. This example is inspired by the `aspects-dbt-example <https://github.com/open-craft/aspects-dbt-example>`_ repo.
+
 License
 *******
 
