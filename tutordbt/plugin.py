@@ -42,6 +42,7 @@ hooks.Filters.CONFIG_OVERRIDES.add_items(
     ]
 )
 
+
 @hooks.Filters.IS_FILE_RENDERED.add()
 def _do_not_render_transformation_files(result: bool, path: str) -> bool:
     """
@@ -52,7 +53,7 @@ def _do_not_render_transformation_files(result: bool, path: str) -> bool:
     if "aspects_dbt_extension" in root and extension == ".sql":
         return False
     return result
-    
+
 
 ########################################
 # INITIALIZATION TASKS
