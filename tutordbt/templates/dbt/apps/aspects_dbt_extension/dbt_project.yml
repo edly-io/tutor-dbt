@@ -32,7 +32,6 @@ clean-targets:         # directories to be removed by `dbt clean`
 # In this example config, we tell dbt to build all models in the example/
 # directory as views. These settings can be overridden in the individual model
 models:
-  aspects_dbt_extension:
-    # Config indicated by + and applies to all files under models/example/
-    example:
-      +materialized: view
+  # Config indicated by + and applies to all files under models/problem_responses/
+  problem_responses:
+    +materialized: view
