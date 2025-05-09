@@ -1,0 +1,63 @@
+name: Verify if files have been modified upstream
+
+on:
+  schedule:
+    # Runs every Monday night at midnight UTC
+    - cron: '0 0 * * 1'
+
+jobs:
+  check-modifications:
+    runs-on: ubuntu-latest
+
+    steps:  
+      - name: Check for changes in the past 7 days
+        id: check_changes
+        run: |
+          FILES=(
+            "tutoraspects/templates/aspects/apps/aspects/scripts/bootstrap.sh"
+            "tutoraspects/templates/aspects/build/aspects/Dockerfile"
+          )
+          
+          SINCE_DATE=$(date -u -d "7 days ago" +"%Y-%m-%dT%H:%M:%SZ")
+          echo "SINCE_DATE=$SINCE_DATE"
+          
+          CHANGED_FILES=""
+          
+          for FILE in "${FILES[@]}"; do
+            RESPONSE=$(curl -s \
+                             "https://api.github.com/repos/openedx/tutor-contrib-aspects/commits?path=$FILE&since=$SINCE_DATE")
+            
+            # Check if response is an array (valid commit history)
+            if echo "$RESPONSE" | jq -e 'if type=="array" then . else empty end' > /dev/null; then
+              COMMITS=$(echo "$RESPONSE" | jq -r '.[].html_url')
+              
+              if [[ -n "$COMMITS" ]]; then
+                FILENAME=$(basename "$FILE")
+                echo "Found changes in $FILE"
+                CHANGED_FILES+="$FILENAME: $FILE\n$COMMITS\n\n"
+              fi
+            else
+              echo "GitHub API error or empty response for $FILE"
+              echo "Response: $RESPONSE"
+            fi
+          done
+
+          if [[ -n "$CHANGED_FILES" ]]; then
+            echo "CHANGED_FILES<<EOF" >> $GITHUB_ENV
+            echo -e "$CHANGED_FILES" >> $GITHUB_ENV
+            echo "EOF" >> $GITHUB_ENV
+          fi
+
+      - name: Create GitHub Issue if changes found
+        if: env.CHANGED_FILES != ''
+        uses: dacbd/create-issue-action@main
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          title: "File modifications detected in the past week"
+          body: |
+            The following files have been modified in the last 7 days:
+            
+            ${{ env.CHANGED_FILES }}
+
+            Please review the changes.
+          labels: "automated issue"
